@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Launcher - Links Rápidos</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<style>
+		.shortcut-card {
+			transition: all 0.3s ease;
+		}
+		.shortcut-card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+		}
+		.edit-diary-entry, .delete-diary-entry {
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+		.shortcut-card:hover .action-buttons {
+			opacity: 1 !important;
+			transform: translateY(-10px);
+		}
+		
+		.action-buttons {
+			position: absolute;
+			top: -4px;
+			right: 5px;
+			display: flex;
+			gap: 5px;
+			opacity: 0;
+			transition: all 0.3s ease;
+			z-index: 10;
+			pointer-events: none;
+			padding: 5px;
+		}
+		
+		.action-btn {
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 12px;
+			transition: all 0.2s ease;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+			pointer-events: auto;
+			padding: 2px;
+		}
+		
+		.action-btn:hover {
+			transform: scale(1.1);
+		}
+		
+		.shortcut-card img {
+			filter: brightness(1.2) contrast(1.1);
+			transition: transform 0.2s ease;
+		}
+		
+		.shortcut-card:hover img {
+			transform: scale(1.1);
+		}
+		
+		.favicon-container {
+			width: 24px;
+			height: 24px;
+		}
+		
+		/* Barra de rolagem customizada */
+		::-webkit-scrollbar {
+			width: 8px;
+			height: 8px;
+		}
+		
+		::-webkit-scrollbar-track {
+			background: #374151;
+			border-radius: 4px;
+		}
+		
+		::-webkit-scrollbar-thumb {
+			background: #6B7280;
+			border-radius: 4px;
+			transition: background 0.2s ease;
+		}
+		
+		::-webkit-scrollbar-thumb:hover {
+			background: #9CA3AF;
+		}
+		
+		::-webkit-scrollbar-corner {
+			background: #374151;
+		}
+		
+		/* Para Firefox */
+		* {
+			scrollbar-width: thin;
+			scrollbar-color: #6B7280 #374151;
+		}
+		.diary-entry-card:hover .edit-diary-entry,
+		.diary-entry-card:hover .delete-diary-entry {
+			opacity: 1;
+		}
+	</style>
+</head>
+<body class="bg-gray-800 min-h-screen">
+	<div class="container mx-auto px-4 py-8">
+		<!-- Header -->
+		<div class="flex justify-between items-center mb-8">
+			<div class="flex items-center">
+				<img src="qLauncher.svg" alt="Launcher" class="h-10">
+			</div>
+			<div class="flex items-center">
+				<a href="http://qualitor.qualitorsoftware.com/html/index.php" class="fixed-shortcut-card bg-blue-500 hover:bg-blue-600 p-3 cursor-pointer relative overflow-hidden block no-underline rounded-l-lg">
+					<div class="text-center">
+						<img src="qualitor.svg" style="height: 20px;">
+					</div>
+				</a>
+				<button id="configBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-r-lg flex items-center justify-center transition-colors">
+					<i class="fas fa-cog text-lg"></i>
+				</button>
+			</div>
+		</div>
+
+		<!-- Main Content Layout -->
+		<div class="flex flex-col lg:flex-row" style="height: calc(100vh - 120px);">
+			<div class="w-full lg:w-1/3 pr-0 lg:pr-4 mb-4 lg:mb-0">
+				<div class="bg-gray-700 rounded-lg p-6 h-full flex flex-col">
+					<div class="diary-header flex justify-between items-center mb-6">
+						<h3 class="text-xl font-semibold text-white">Diário de Anotações</h3>
+						<button id="addDiaryEntryBtn" class="bg-green-500 hover:bg-green-600 text-white px-2 py-2 rounded-lg flex items-center transition-colors">
+							<i class="fas fa-plus"></i>
+						</button>
+					</div>
+					
+					<!-- Diary Entry Form -->
+					<div id="diaryEntryForm" class="hidden mb-6">
+						<div class="flex gap-4">
+							<!-- Coluna esquerda - Textarea -->
+							<div class="flex-1">
+								<textarea id="diaryContent" rows="3" class="w-full px-3 py-2 bg-gray-500 text-white border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="O que você está fazendo agora?"></textarea>
+							</div>
+							
+							<!-- Coluna direita - Botões -->
+							<div class="flex flex-col space-y-2">
+								<button id="saveDiaryEntry" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md flex items-center justify-center transition-colors" title="Salvar">
+									<i class="fas fa-check"></i>
+								</button>
+								<button id="cancelDiaryEntry" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md flex items-center justify-center transition-colors" title="Cancelar">
+									<i class="fas fa-times"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Diary Entries List -->
+					<div id="diaryEntriesList" class="flex-1 overflow-y-auto space-y-4 pe-3">
+						<!-- Entries will be loaded here -->
+					</div>
+				</div>
+			</div>
+
+			<!-- Shortcuts Column (2/3 width) -->
+			<div class="w-full lg:w-2/3 pl-0 lg:pl-4 flex flex-col">
+				<!-- Fixed Cards Section -->
+				<div class="mb-8">
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<!-- Card 8.24 -->
+						<div class="bg-blue-600 rounded-lg p-4 shadow-sm">
+							<div class="flex items-center justify-center w-full">
+								<img src="qW.png" class="h-10 mb-2">
+								<h1 class="font-bold text-white mb-4 ms-2 text-center text-3xl">8.24</h1>
+							</div>
+							<div class="grid grid-cols-2 gap-3">
+								<a href="http://localhost/8.24/html/index.php" class="fixed-shortcut-card bg-blue-500 rounded-lg p-3 cursor-pointer relative overflow-hidden block no-underline" data-category="8.24" data-type="atendente">
+									<div class="text-center">
+										<h4 class="text-sm font-medium text-white truncate">Atendente</h4>
+									</div>
+								</a>
+								<a href="http://localhost/8.24/html/sys/syssolicitante9/portal/portal.php" class="fixed-shortcut-card bg-blue-500 rounded-lg p-3 cursor-pointer relative overflow-hidden block no-underline" data-category="8.24" data-type="solicitante">
+									<div class="text-center">
+										<h4 class="text-sm font-medium text-white truncate">Solicitante</h4>
+									</div>
+								</a>
+							</div>
+						</div>
+
+						<!-- Card 8.20 -->
+						<div class="bg-blue-600 rounded-lg p-4 shadow-sm">
+							<div class="flex items-center justify-center w-full">
+								<img src="qW.png" class="h-10 mb-2">
+								<h1 class="font-bold text-white mb-4 ms-2 text-center text-3xl">8.20</h1>
+							</div>
+							<div class="grid grid-cols-2 gap-3">
+								<a href="http://localhost/8.20/html/index.php" class="fixed-shortcut-card bg-blue-500 rounded-lg p-3 cursor-pointer relative overflow-hidden block no-underline" data-category="8.20" data-type="atendente">
+									<div class="text-center">
+										<h4 class="text-sm font-medium text-white truncate">Atendente</h4>
+									</div>
+								</a>
+								<a href="http://localhost/8.20/html/sys/syssolicitante9/portal/portal.php" class="fixed-shortcut-card bg-blue-500 rounded-lg p-3 cursor-pointer relative overflow-hidden block no-underline" data-category="8.20" data-type="solicitante">
+									<div class="text-center">
+										<h4 class="text-sm font-medium text-white truncate">Solicitante</h4>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+	            <!-- Dynamic Shortcuts Grid -->
+	            <div class="flex-1 flex flex-col">
+	                <h3 class="text-lg font-semibold text-gray-300 mb-4">Outros Atalhos</h3>
+	                <div id="shortcutsGrid" class="flex-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 content-start">
+	                    <!-- Dynamic shortcuts will be added here -->
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+	<!-- Modal -->
+	<div id="shortcutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+	    <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+	        <div class="flex justify-between items-center mb-4">
+	            <h2 class="text-xl font-bold text-gray-800">Adicionar Atalho</h2>
+	            <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+	                <i class="fas fa-times text-xl"></i>
+	            </button>
+	        </div>
+	        
+	        <form id="shortcutForm">
+	            <div class="mb-4">
+	                <label for="shortcutTitle" class="block text-sm font-medium text-gray-700 mb-2">Título</label>
+	                <input type="text" id="shortcutTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+	            </div>
+	            
+
+	            <div class="mb-4">
+	                <label for="shortcutColor" class="block text-sm font-medium text-gray-700 mb-2">Cor de Fundo</label>
+	                <input type="color" id="shortcutColor" class="w-20 h-10 border border-gray-300 rounded-md cursor-pointer" value="#3B82F6">
+	            </div>
+	            
+	            
+	            <div class="mb-6">
+	                <label for="shortcutLink" class="block text-sm font-medium text-gray-700 mb-2">URL</label>
+	                <input type="url" id="shortcutLink" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://exemplo.com" required>
+	            </div>
+	            
+	            <div class="flex justify-end space-x-3">
+	                <button type="button" id="cancelBtn" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">Cancelar</button>
+	                <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors">Salvar</button>
+	            </div>
+	        </form>
+	    </div>
+	</div>
+
+	<!-- Modal de Configuração Geral -->
+	<div id="configModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+		<div class="bg-gray-700 rounded-lg w-full max-w-2xl max-h-[90vh] mx-4 flex flex-col">
+			<!-- Header fixo -->
+			<div class="flex justify-between items-center p-6 border-b border-gray-600">
+				<h2 class="text-xl font-bold text-white">Configurações Gerais</h2>
+				<button id="closeConfigModal" class="text-gray-300 hover:text-white">
+					<i class="fas fa-times text-xl"></i>
+				</button>
+			</div>
+			
+			<!-- Conteúdo com rolagem -->
+			<div class="flex-1 overflow-y-auto p-6">
+				<!-- Configurações Gerais -->
+				<div class="mb-6">
+					<h4 class="text-lg font-semibold text-white mb-3">Configurações Gerais</h4>
+					<div class="mb-4 p-4 bg-gray-600 rounded-lg">
+						<div class="mb-3">
+							<label class="block text-sm text-gray-300 mb-2">Comportamento dos Atalhos</label>
+							<div class="flex items-center space-x-4">
+								<label class="flex items-center">
+									<input type="radio" name="linkBehavior" value="same" class="mr-2" checked>
+									<span class="text-sm text-gray-300">Abrir na mesma aba</span>
+								</label>
+								<label class="flex items-center">
+									<input type="radio" name="linkBehavior" value="new" class="mr-2">
+									<span class="text-sm text-gray-300">Abrir em nova aba</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Configurações de Hosts -->
+				<div class="mb-6">
+					<h4 class="text-lg font-semibold text-white mb-3">Configuração de Hosts</h4>
+					
+					<!-- Host 8.24 -->
+					<div class="mb-4 p-4 bg-gray-600 rounded-lg">
+						<h5 class="text-md font-medium text-white mb-3">Versão 8.24</h5>
+						<div>
+							<label class="block text-sm text-gray-300 mb-1">Host Base</label>
+							<input type="text" id="host824" class="w-full px-3 py-2 bg-gray-500 text-white rounded border border-gray-400 focus:border-blue-500 focus:outline-none" placeholder="http://localhost/8.24">
+						</div>
+					</div>
+					
+					<!-- Host 8.20 -->
+					<div class="mb-4 p-4 bg-gray-600 rounded-lg">
+						<h5 class="text-md font-medium text-white mb-3">Versão 8.20</h5>
+						<div>
+							<label class="block text-sm text-gray-300 mb-1">Host Base</label>
+							<input type="text" id="host820" class="w-full px-3 py-2 bg-gray-500 text-white rounded border border-gray-400 focus:border-blue-500 focus:outline-none" placeholder="http://localhost/8.20">
+						</div>
+					</div>
+				</div>
+				
+				<!-- Opções de Backup -->
+				<div class="mb-6">
+					<h4 class="text-lg font-semibold text-white mb-3">Backup e Restore</h4>
+					
+					<div class="space-y-3 bg-gray-600 rounded-lg p-4">
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div class="border-b border-gray-600 pb-3 md:border-b-0 md:border-r md:pr-4">
+								<h5 class="text-sm font-semibold text-gray-300 mb-2">Atalhos</h5>
+								<button id="exportDataBtn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md transition-colors flex items-center justify-center">
+									<i class="fas fa-download mr-2"></i>
+									Exportar Atalhos
+								</button>
+								
+								<button id="importDataBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition-colors flex items-center justify-center mt-2">
+									<i class="fas fa-upload mr-2"></i>
+									Importar Atalhos
+								</button>
+								
+								<button id="clearAllBtn" class="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors flex items-center justify-center mt-2">
+									<i class="fas fa-trash mr-2"></i>
+									Limpar Atalhos
+								</button>
+							</div>
+
+							<div class="md:pl-4">
+								<h5 class="text-sm font-semibold text-gray-300 mb-2">Diário</h5>
+								<button id="exportDiaryBtn" class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors flex items-center justify-center">
+									<i class="fas fa-download mr-2"></i>
+									Exportar Diário
+								</button>
+								
+								<button id="importDiaryBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors flex items-center justify-center mt-2">
+									<i class="fas fa-upload mr-2"></i>
+									Importar Diário
+								</button>
+								
+								<button id="clearDiaryBtn" class="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors flex items-center justify-center mt-2">
+									<i class="fas fa-trash mr-2"></i>
+									Limpar Diário
+								</button>
+							</div>
+						</div>
+					</div>
+					<input type="file" id="importDiaryInput" accept=".json" style="display: none;">
+				</div>
+			</div>
+			
+			<!-- Footer fixo -->
+			<div class="flex justify-end gap-4 p-6 border-t border-gray-600">
+				<button id="saveConfigBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+					Salvar Configurações
+				</button>
+				<button id="closeConfigModalBtn" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded">
+					Fechar
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Hidden file inputs for import -->
+	<input type="file" id="importFileInput" accept=".json" style="display: none;">
+	<input type="file" id="importDiaryInput" accept=".json" style="display: none;">
+
+	<script src="diary.js"></script>
+	<script src="script.js"></script>
+</body>
+</html>
