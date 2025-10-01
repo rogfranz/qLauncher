@@ -1,161 +1,158 @@
-# Launcher - Links Rápidos
+# qLauncher - Sistema de Atalhos e Diário
 
-Um launcher simples e elegante para criar atalhos de acesso rápido que podem ser usados como página inicial do navegador.
+Um launcher moderno e completo para gerenciar atalhos de acesso rápido e manter um diário de anotações, desenvolvido especificamente para ambientes de desenvolvimento e produtividade.
 
-## 🚀 Funcionalidades
+## 🚀 Funcionalidades Principais
 
-- ✅ Interface limpa e responsiva
-- ✅ Adicionar atalhos com título, descrição, cor e link
-- ✅ Campo de descrição opcional para cada atalho
-- ✅ Persistência em arquivo JSON local
-- ✅ Remoção de atalhos com confirmação
-- ✅ Navegação para links em nova aba
-- ✅ Atalhos de teclado (Ctrl+N para novo atalho, ESC para fechar modal)
-- ✅ Sistema de notificações
-- ✅ Backup e restore de dados
-- ✅ Funciona 100% no navegador (sem servidor)
-- ✅ Fallback para localStorage quando File System Access API não está disponível
+### 📌 Sistema de Atalhos
+
+- ✅ **Atalhos Dinâmicos** - Adicionar, editar e remover atalhos personalizados
+- ✅ **Atalhos Fixos** - Sistema pré-configurado para versões 8.24 e 8.20
+- ✅ **Favicons Automáticos** - Busca automática de ícones dos sites
+- ✅ **Configuração de Hosts** - Personalizar URLs base para diferentes versões
+- ✅ **Comportamento de Links** - Configurar abertura em mesma aba ou nova aba
+- ✅ **Interface Responsiva** - Funciona perfeitamente em desktop, tablet e mobile
+
+### 📝 Sistema de Diário
+
+- ✅ **Anotações Diárias** - Permite registrar a atividades do dia pra não se perder no daily do dia seguinte
+- ✅ **Sistema de Cores** - Visual diferenciado por prioridade (hoje, último dia, demais)
+- ✅ **Edição e Exclusão** - Gerencie suas anotações facilmente
+- ✅ **Backup e Restore** - Exporte e importe seu diário
+
+### 🔧 Funcionalidades Avançadas
+
+- ✅ **IndexedDB** - Armazenamento robusto no navegador
+- ✅ **Backup Completo** - Exportar/importar atalhos e diário
+- ✅ **Configurações Persistentes** - Salva preferências do usuário
+- ✅ **Notificações** - Feedback visual para todas as ações
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **HTML5** - Estrutura da página
-- **CSS3** - Estilização (com Tailwind CSS)
-- **JavaScript** - Lógica da aplicação
+- **HTML5** - Estrutura semântica
+- **CSS3 + Tailwind CSS** - Estilização moderna e responsiva
+- **JavaScript ES6+** - Lógica da aplicação
 - **jQuery** - Manipulação do DOM
-- **Tailwind CSS** - Framework CSS utilitário
+- **IndexedDB** - Banco de dados no navegador
 - **Font Awesome** - Ícones
-- **File System Access API** - Para salvar arquivos no disco
-- **localStorage** - Fallback para navegadores sem File System Access API
+- **Google Favicons API** - Busca automática de favicons
 
 ## 📁 Estrutura do Projeto
 
 ```
 qLauncher/
-├── index.html          # Página principal
-├── script.js           # Lógica da aplicação
-├── data.json           # Banco de dados dos atalhos (opcional)
-└── README.md           # Documentação
+├── index.html          # Página principal da aplicação
+├── script.js           # Lógica principal e gerenciamento de atalhos
+├── diary.js            # Sistema de diário com IndexedDB
+└── README.md           # Esta documentação
 ```
 
 ## 🚀 Como Usar
 
-### Pré-requisitos
-- Navegador web moderno (Chrome, Edge, Firefox)
-- **Importante**: File System Access API funciona melhor no Chrome/Edge
+### Instalação
 
-### Execução
+1. **Clone ou baixe** os arquivos do projeto
+2. **Abra** o arquivo `index.html` no navegador
+3. **Pronto!** A aplicação está funcionando
 
-1. **Abrir a aplicação**:
-   - Simplesmente abra o arquivo `index.html` no navegador
-   - Ou sirva via servidor local (opcional): `python -m http.server 8000`
+### Uso Básico
 
-2. **Configurar arquivos (opcional)**:
-   - Clique no botão "Arquivos" no cabeçalho
-   - Selecione um arquivo `data.json` existente ou crie um novo
+#### 📌 Gerenciando Atalhos
 
-## 🎯 Como Usar
+1. **Adicionar Atalho**: Clique no botão "+" na área de atalhos
+2. **Preencher Dados**: Título, cor, URL
+3. **Salvar**: Clique em "Salvar" para adicionar
+4. **Usar**: Clique em qualquer atalho para abrir o link
+5. **Editar/Remover**: Passe o mouse sobre um atalho e use os botões de ação
 
-1. **Adicionar Atalho**: Clique no botão "+" no canto superior direito
-2. **Preencher Dados**: 
-   - Título do atalho
-   - Cor de fundo (selecione uma cor)
-   - Descrição (opcional - texto explicativo)
-   - Link (URL completa)
-3. **Salvar**: Clique em "Salvar" para adicionar o atalho
-4. **Usar**: Clique em qualquer atalho para abrir o link em nova aba
-5. **Remover**: Passe o mouse sobre um atalho e clique no "X" vermelho
+#### 📝 Usando o Diário
 
-## ⌨️ Atalhos de Teclado
+1. **Nova Anotação**: Clique no botão "+" no painel do diário
+2. **Escrever**: Digite sua anotação no campo de texto
+3. **Salvar**: Clique no botão de salvar (✓)
+4. **Editar**: Clique no ícone de edição em uma anotação existente
+5. **Excluir**: Clique no ícone de lixeira para remover
 
-- `Ctrl + N` - Abrir modal para novo atalho
-- `ESC` - Fechar modal
+#### ⚙️ Configurações
+
+1. **Abrir Configurações**: Clique no ícone de engrenagem (⚙️)
+2. **Configurar Hosts**: Defina URLs base para versões 8.24 e 8.20
+3. **Comportamento de Links**: Escolha abrir em mesma aba ou nova aba
+4. **Backup**: Exporte/importe seus dados
 
 ## 💾 Armazenamento de Dados
 
-O sistema oferece duas opções de armazenamento:
+### IndexedDB (Atual)
 
-### **Modo Arquivo (Recomendado)**
-- **data.json** - Arquivo JSON no disco contendo todos os atalhos
-- **Persistente** - Dados ficam salvos mesmo fechando o navegador
-- **Portável** - Pode mover os arquivos para outro computador
-
-### **Modo Navegador (Fallback)**
-- **localStorage** - Dados salvos no navegador
-- **Limitado** - Dados podem ser perdidos se limpar o navegador
-- **Compatível** - Funciona em todos os navegadores
-
-## 🔧 Funcionalidades Avançadas
+- **Atalhos** - Armazenados em `qLauncherDB.shortcuts`
+- **Atalhos Fixos** - Armazenados em `qLauncherDB.fixedShortcuts`
+- **Configurações** - Armazenadas em `qLauncherDB.config`
+- **Diário** - Armazenado em `LauncherDiary.entries`
 
 ### Backup e Restore
-Você pode fazer backup dos seus atalhos usando o console do navegador:
 
-```javascript
-// Exportar dados (download automático)
-LauncherApp.exportData();
-
-// Importar dados (via input file)
-// Use LauncherApp.importData(file) no console
-
-// Ver todos os atalhos
-LauncherApp.shortcuts();
-
-// Limpar todos os atalhos
-LauncherApp.clearAll();
-```
-
-### Menu de Arquivos
-O botão "Arquivos" no cabeçalho oferece:
-
-- **Selecionar data.json** - Carregar arquivo existente
-- **Criar novo data.json** - Criar novo arquivo de dados
-- **Exportar Backup** - Download do arquivo de backup
-- **Importar Backup** - Restaurar dados de backup
+- **Exportar Atalhos** - Download em formato JSON
+- **Importar Atalhos** - Restaurar de arquivo JSON
+- **Exportar Diário** - Backup do diário em JSON
+- **Importar Diário** - Restaurar diário de backup
 
 ## 🎨 Personalização
 
-O projeto usa Tailwind CSS, então você pode facilmente personalizar:
-- Cores do tema
-- Layout e espaçamentos
-- Animações e transições
-- Responsividade
+### Cores e Temas
+
+- Interface escura com tons de cinza
+- Cores personalizáveis para cada atalho
+- Sistema de cores do diário baseado em prioridade
+
+### Layout
+
+- Design responsivo com Tailwind CSS
+- Grid adaptativo para diferentes tamanhos de tela
+- Animações suaves e transições
+
+## 🔧 Funcionalidades Técnicas
+
+### Sistema de Atalhos Fixos
+
+- **Versão 8.24**: Atendente e Solicitante
+- **Versão 8.20**: Atendente e Solicitante
+- **URLs Configuráveis**: Personalize hosts base
+- **Cores Diferenciadas**: Visual distinto por versão
+
+### Sistema de Diário
+
+- **Indexação por Data**: Busca eficiente por período
+- **Sistema de Tags**: Organização por categorias
+- **Timestamps**: Controle de criação e atualização
+- **Interface Intuitiva**: Edição inline e ações rápidas
 
 ## 🌐 Como Usar como Página Inicial
 
-### **Opção 1: Arquivo Local**
-1. Salve o arquivo `index.html` em uma pasta acessível
-2. No seu navegador, vá em Configurações > Página inicial
-3. Defina o caminho para o arquivo `index.html`
-4. Agora toda vez que abrir uma nova aba, verá seus atalhos!
+### Configuração no Navegador
 
-### **Opção 2: Servidor Local (Opcional)**
-1. Sirva os arquivos via servidor local: `python -m http.server 8000`
-2. No seu navegador, vá em Configurações > Página inicial
-3. Defina a URL: `http://localhost:8000`
-4. Agora toda vez que abrir uma nova aba, verá seus atalhos!
+1. **Chrome/Edge**: Configurações → Página inicial → Adicionar URL
+2. **Firefox**: Preferências → Geral → Página inicial
+3. **URL**: `file:///caminho/para/qLauncher/index.html`
 
-## 📱 Responsividade
+## 📱 Compatibilidade
 
-O launcher é totalmente responsivo e funciona bem em:
-- Desktop
-- Tablet
-- Mobile
+- ✅ **Chrome** 80+ (recomendado)
+- ✅ **Edge** 80+
+- ✅ **Firefox** 75+
+- ✅ **Safari** 13+
+- ✅ **Mobile** (iOS/Android)
 
-## 🔒 Privacidade
+## 🔒 Privacidade e Segurança
 
-- Todos os dados ficam armazenados localmente no seu computador
-- Nenhuma informação é enviada para servidores externos
-- Você tem controle total sobre seus dados
-- Funciona completamente offline
-
-## 🚀 Melhorias Futuras
-
-- [ ] Categorias para organizar atalhos
-- [ ] Busca/filtro de atalhos
-- [ ] Temas personalizáveis
-- [ ] Importação de bookmarks do navegador
-- [ ] Sincronização entre dispositivos
-- [ ] Widgets adicionais (clima, notícias, etc.)
+- **100% Local** - Todos os dados ficam no seu navegador
+- **Sem Servidores** - Nenhuma informação é enviada externamente
+- **Offline** - Funciona completamente sem internet
+- **Controle Total** - Você possui todos os seus dados
 
 ## 📄 Licença
 
 Este projeto é de código aberto e pode ser usado livremente para fins pessoais e comerciais.
+
+---
+
+**Desenvolvido com ❤️ para produtividade e organização dos colegas da Qualitor**
