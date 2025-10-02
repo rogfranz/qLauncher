@@ -33,21 +33,19 @@ class DiaryManager {
 	                // Criar índices para busca eficiente
 	                store.createIndex('date', 'date', { unique: false });
 	                store.createIndex('createdAt', 'createdAt', { unique: false });
-	                store.createIndex('tags', 'tags', { unique: false, multiEntry: true });
 	            }
 	        };
 	    });
 	}
 
 	// Adicionar entrada no diário
-	async addEntry(content, tags = []) {
+	async addEntry(content) {
 	    if (!this.db) await this.init();
 	    
 	    const entry = {
 	        id: Date.now(),
 	        date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
 	        content: content.trim(),
-	        tags: tags,
 	        createdAt: new Date().toISOString(),
 	        updatedAt: new Date().toISOString()
 	    };
@@ -130,7 +128,7 @@ class DiaryManager {
 	}
 
 	// Atualizar entrada
-	async updateEntry(id, content, tags = []) {
+	async updateEntry(id, content) {
 	    if (!this.db) await this.init();
 	    
 	    return new Promise((resolve, reject) => {
@@ -142,7 +140,6 @@ class DiaryManager {
 	            const entry = getRequest.result;
 	            if (entry) {
 	                entry.content = content.trim();
-	                entry.tags = tags;
 	                entry.updatedAt = new Date().toISOString();
 	                
 	                const updateRequest = store.put(entry);
@@ -205,7 +202,7 @@ class DiaryManager {
 	                    
 	                    // Adicionar dados importados
 	                    for (const entry of imported) {
-	                        await this.addEntry(entry.content, entry.tags);
+	                        await this.addEntry(entry.content);
 	                    }
 	                    resolve();
 	                } else {
