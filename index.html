@@ -24,6 +24,25 @@
 			opacity: 1 !important;
 			transform: translateY(-10px);
 		}
+
+		.top-shortcut-button {
+			height: 40px;
+			text-align: center;
+			align-items: center;
+			justify-content: center;
+			display: flex;
+			gap: 5px;
+			padding: 5px;
+			color: #fff;
+		}
+
+		.top-shortcut-button:first-child {
+			border-radius: 5px 0 0 5px;
+		}
+
+		.top-shortcut-button:last-child {
+			border-radius: 0 5px 5px 0;
+		}
 		
 		.action-buttons {
 			position: absolute;
@@ -114,13 +133,14 @@
 				<img src="qLauncher.svg" alt="Launcher" class="h-10">
 			</div>
 			<div class="flex items-center">
-				<a href="http://qualitor.qualitorsoftware.com/html/index.php" class="fixed-shortcut-card bg-blue-500 hover:bg-blue-600 p-3 cursor-pointer relative overflow-hidden block no-underline rounded-l-lg">
-					<div class="text-center">
-						<img src="qualitor.svg" style="height: 20px;">
-					</div>
+				<a href="https://qualitor.qualitorsoftware.com/html/ad/adpesquisasql/search.php?cdpesquisa=365" class="top-shortcut-button bg-blue-600 hover:bg-blue-700 flex align-center px-3 cursor-pointer relative overflow-hidden block no-underline">
+					<span><i class="fas fa-table-cells opacity-50 me-2"></i> Grid de Chamados</span>
 				</a>
-				<button id="configBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-r-lg flex items-center justify-center transition-colors">
-					<i class="fas fa-cog text-lg"></i>
+				<a href="http://qualitor.qualitorsoftware.com/html/index.php" class="top-shortcut-button bg-blue-500 hover:bg-blue-600 p-3 cursor-pointer relative overflow-hidden block no-underline">
+					<span><img src="qualitor.svg" style="height: 20px;"></span>
+				</a>
+				<button id="configBtn" class="top-shortcut-button bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 flex items-center justify-center transition-colors">
+					<span><i class="fas fa-cog text-lg"></i></span>
 				</button>
 			</div>
 		</div>
